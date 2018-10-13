@@ -1,51 +1,60 @@
-/* jshint browser: true */
+"use strict";
 
-(function(){
-  "use strict";
+const qBtnSubmit = document.querySelector("#button-submit");
+const qAnswerArea = document.querySelector("#full-answer");
+const qImageContainer = document.querySelector("#captcha-image-container");
 
-  function _selectRandom(myArray) {
-    return myArray[Math.floor(Math.random() * myArray.length)];
+const input_box = `<input type="text" id="input-box" autocomplete="off">`
+const questions = [
+  {
+    "prompt": `Look over ${input_box}.`,
+    "answer": "there",
+    "images": ["there.png", "their.png", "theyre.png"]
+  },
+  {
+    "prompt": `${input_box} the only one who can prevent forest fires.`,
+    "answer": "you're",
+    "images": ["your.png", "youre.png"]
   }
+];
 
-  var selectedAnswer,
-      btnSubmit = document.querySelector("#button-submit");
+function selectRandom(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
 
-  window.onload = (function() {
-    var prefix     = "./img/",
-        images     = ["your.png", "youre.png", "there.png", "their.png", "theyre.png"],
-        answers    = ['"&nbsp;&nbsp;input-box the only one who can prevent forest fires."', '"Look over input-box&nbsp;."'],
-        template   = "<img class='captcha-image' height='100' src='prefix-image'><br><br>",
-        container  = document.querySelector("#captcha-image-container");
-    selectedAnswer = _selectRandom(answers).replace(/input-box/, '<input type="text" id="input-box" autocomplete="off">');
+function isCorrectAnswer(user, correct) {
+  return user.trim().toLowerCase() === correct;
+}
 
-    if (selectedAnswer.indexOf("forest fires") > -1) {
-      container.innerHTML = template.replace(/prefix-image/, prefix + images[0]);
-      container.innerHTML += template.replace(/prefix-image/, prefix + images[1]);
+function evaluateAnswer(e) {
+  const user_input = e.value || e.target.value;
+  if (isCorrectAnswer(user_input, selected_question.answer)) {
+    window.location.replace("https://www.google.com");
+  } else {
+    document.body.remove();
+  }
+}
 
-    } else {
-      container.innerHTML = template.replace(/prefix-image/, prefix + images[2]);
-      container.innerHTML += template.replace(/prefix-image/, prefix + images[3]);
-      container.innerHTML += template.replace(/prefix-image/, prefix + images[4]);
-    }
-    document.querySelector("#full-answer").innerHTML = selectedAnswer;
+// Pick a prompt to display to the user
+const selected_question = selectRandom(questions);
 
-    document.querySelector("#input-box").onkeypress = function(e) {
-      if (e.keyCode === 13) {
-        btnSubmit.click();
-        return false;
-      }
-    };
-  });
+// Generate the HTML for the image-based answer options
+selected_question.images.forEach(function(img) {
+  qImageContainer.insertAdjacentHTML(
+    "beforeend",
+    `<img class='captcha-image' width='200' src='img/${img}'>`
+  );
+});
 
-  btnSubmit.addEventListener("click", function() {
-    var userInput      = document.querySelector("#input-box").value,
-        theRightAnswer = selectedAnswer.indexOf("forest fires") > -1 ? "you're" : "there";
+// Display the prompt to be answered
+qAnswerArea.insertAdjacentHTML("afterbegin", selected_question.prompt);
+const qInput = document.querySelector("#input-box");
 
-    if (userInput.toLowerCase() === theRightAnswer) {
-      window.location.replace("https://google.com");
-    } else {
-      document.querySelector("body").innerHTML = "";
-    }
+qBtnSubmit.addEventListener("click", evaluateAnswer);
+qInput.addEventListener("keyup", function(e) {
+  // Only react on enter key press
+  if (e.key === "Enter") {
+    evaluateAnswer(this);
     return false;
-  });
-})();
+  }
+});
