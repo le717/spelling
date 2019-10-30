@@ -39,10 +39,10 @@ function evaluateAnswer(e) {
 const selected_question = selectRandom(questions);
 
 // Generate the HTML for the image-based answer options
-selected_question.images.forEach(function(img) {
+selected_question.images.forEach(img => {
   qImageContainer.insertAdjacentHTML(
     "beforeend",
-    `<img class='captcha-image' width='200' src='img/${img}'>`
+    `<img class='captcha-image' width='200' height='116' src='img/${img}'>`
   );
 });
 
