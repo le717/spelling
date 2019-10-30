@@ -30,8 +30,10 @@ function evaluateAnswer(e) {
   const user_input = e.value || e.target.value;
   if (isCorrectAnswer(user_input, selected_question.answer)) {
     window.location.replace("https://www.google.com");
+    return false;
   } else {
     document.body.remove();
+    return false;
   }
 }
 
