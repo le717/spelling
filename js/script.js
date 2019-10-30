@@ -4,7 +4,7 @@ const qBtnSubmit = document.querySelector("#button-submit");
 const qAnswerArea = document.querySelector("#full-answer");
 const qImageContainer = document.querySelector("#captcha-image-container");
 
-const input_box = `<input type="text" id="input-box" autocomplete="off">`
+const input_box = `<input type="text" id="input-box" autocomplete="off" autofocus>`
 const questions = [
   {
     "prompt": `Look over ${input_box}.`,
