@@ -4,7 +4,7 @@ const qBtnSubmit = document.querySelector("#button-submit");
 const qAnswerArea = document.querySelector("#full-answer");
 const qImageContainer = document.querySelector("#captcha-image-container");
 
-const input_box = `<input type="text" id="input-box" autocomplete="off">`
+const input_box = `<input type="text" id="input-box" autocomplete="off" autofocus>`
 const questions = [
   {
     "prompt": `Look over ${input_box}.`,
@@ -30,8 +30,10 @@ function evaluateAnswer(e) {
   const user_input = e.value || e.target.value;
   if (isCorrectAnswer(user_input, selected_question.answer)) {
     window.location.replace("https://www.google.com");
+    return false;
   } else {
     document.body.remove();
+    return false;
   }
 }
 
@@ -39,10 +41,10 @@ function evaluateAnswer(e) {
 const selected_question = selectRandom(questions);
 
 // Generate the HTML for the image-based answer options
-selected_question.images.forEach(function(img) {
+selected_question.images.forEach(img => {
   qImageContainer.insertAdjacentHTML(
     "beforeend",
-    `<img class='captcha-image' width='200' src='img/${img}'>`
+    `<img class='captcha-image' width='200' height='116' src='img/${img}'>`
   );
 });
 
