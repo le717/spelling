@@ -1,6 +1,6 @@
 "use strict";
 
-const qBtnSubmit = document.querySelector("#button-submit");
+const qForm = document.querySelector("form");
 const qAnswerArea = document.querySelector("#full-answer");
 const qImageContainer = document.querySelector("#captcha-image-container");
 
@@ -22,22 +22,20 @@ function selectRandom(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-function isCorrectAnswer(user, correct) {
-  return user.trim().toLowerCase() === correct;
+// Determine if the visitor answered correctly
+function isCorrectAnswer(guess, correct) {
+  return guess.trim().toLowerCase() === correct;
 }
 
 function evaluateAnswer(e) {
-  const user_input = e.value || e.target.value;
-  if (isCorrectAnswer(user_input, selected_question.answer)) {
+  if (isCorrectAnswer(e.value, selected_question.answer)) {
     window.location.replace("https://www.google.com");
-    return false;
   } else {
     document.body.remove();
-    return false;
   }
 }
 
-// Pick a prompt to display to the user
+// Pick a prompt to display to the visitor
 const selected_question = selectRandom(questions);
 
 // Generate the HTML for the image-based answer options
@@ -52,11 +50,8 @@ selected_question.images.forEach(img => {
 qAnswerArea.insertAdjacentHTML("afterbegin", selected_question.prompt);
 const qInput = document.querySelector("#input-box");
 
-qBtnSubmit.addEventListener("click", evaluateAnswer);
-qInput.addEventListener("keyup", function(e) {
-  // Only react on enter key press
-  if (e.key === "Enter") {
-    evaluateAnswer(this);
-    return false;
-  }
+// Check the input
+qForm.addEventListener("submit", function(e) {
+  e.preventDefault();
+  evaluateAnswer(qInput);
 });
